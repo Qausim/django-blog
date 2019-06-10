@@ -1,0 +1,29 @@
+body {
+    display: flex;
+    justify-content: space-between;
+}
+
+#content {
+    flex: 1 1 65%;
+    padding: 32px;
+}
+
+h2 ~ h2 {
+    margin-top: 50px;
+}
+
+.date {
+    color: lightgray;
+    font-style: italic;
+}
+
+a {
+    text-decoration: none;
+    color: blue;
+}
+
+#sidebar {
+    padding: 16px;
+    flex: 1 1 30%;
+    background-color: #efefef;
+}
