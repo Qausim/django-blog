@@ -3,8 +3,8 @@ from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.shortcuts import get_object_or_404, render
 from django.views.generic import ListView
 
-from .forms import EmailPostForm
-from .models import Post
+from .forms import EmailPostForm, CommentForm
+from .models import Post, Comment
 
 
 # Create your views here.
@@ -22,12 +22,33 @@ def post_detail(request, year, month, day, post):
     '''
         fetches a particular post and renders it to user
     '''
+    new_comment = None
     post = get_object_or_404(Post, slug=post,
     status='published', publish__year=year,
     publish__month=month, publish__day=day)
     
+    # comments list
+    comments = post.comments.filter(active=True)
+    
+    if request.method == 'POST':
+        # get comment
+        comment_form = CommentForm(request.POST)
+        
+        if comment_form.is_valid():
+            # create comment but save not yet
+            new_comment = comment_form.save(commit=False)
+            # assign comment's post object
+            new_comment.post = post
+            # save comment
+            new_comment.save()
+    else:
+        comment_form = CommentForm()
+        
     return render(request, 'blog/post/detail.html', {
-        'post': post
+        'post': post,
+        'comments': comments,
+        'comment_form': comment_form,
+        'new_comment': new_comment
     })
 
 
